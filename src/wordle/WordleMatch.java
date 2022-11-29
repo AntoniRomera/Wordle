@@ -55,7 +55,7 @@ public class WordleMatch {
         this.matchWords = new Palabra[rounds];
 
         Palabra word = word_manager.askAvailableWord(this.hints, mode);
-        for (round = 1; round <= rounds; round++) {
+        for (round = 1; round < rounds; round++) {
             this.matchWords[round - 1] = word;
             while (round == 1 && word.getIndex(0) == this.COMMAND_HELP && mode == 1) {
                 System.out.println("No se puede pedir ayuda en la primera ronda");
@@ -96,7 +96,8 @@ public class WordleMatch {
             if (i < this.solution.length - 1) {
                 System.out.print("|");
             }
-        }   
+        }
+        System.out.println("");
     }
     
     private void compareSolution(Palabra word) {

@@ -44,6 +44,7 @@ public class Wordle {
         settings.askPlayer();
         
         this.settings = settings;
+        this.game.setSettings(settings);
         this.start();
     }
     

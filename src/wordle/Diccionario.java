@@ -8,6 +8,7 @@ import java.util.Random;
 import java.io.*;
 
 import wordle.Palabra;
+import wordle.LT;
 import wordle.WordleHint;
 /**
  *
@@ -18,6 +19,7 @@ public class Diccionario {
     private int language;
     long seed;
     int word_length;
+    private final LT READER = new LT();
     
     public Diccionario(int language, int word_length) {
         this.language = language;
@@ -41,9 +43,16 @@ public class Diccionario {
     
     public Palabra askAvailableWord(WordleHint criteria, int mode) {
         
-        char[] w = {'t', 'e', 's', 't'};
-        Palabra word = new Palabra(w);
-        return word;
+        System.out.print("Inserta la palabra a jugar: ");
+        char[] w = READER.leerLinea().toCharArray();
+        while (w.length != this.word_length) {
+            if (mode == 1 && w[0] == '?') {
+                return new Palabra(w);
+            }
+            System.out.print("Longitud incorrecta, vuelva a intentarlo: ");
+            w = READER.leerLinea().toCharArray();
+        }
+        return new Palabra(w);
     }
     
     public void showPossibleWords(WordleHint criteria) {
