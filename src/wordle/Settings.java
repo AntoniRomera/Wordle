@@ -28,7 +28,7 @@ public class Settings {
      */
     private int mode = 0;
     private int language = 2;
-    private long seed = 0;
+    private long seed = System.currentTimeMillis();
     private final LT READER = new LT();
     
     // TODO: Modo oficial, indicar fecha
@@ -141,7 +141,38 @@ public class Settings {
         }
         this.mode = mode;
         
+        
+        if (mode == 3) {
+            this.vsMode();
+        }
+        
         this.askPlayer();
+    }
+    
+    
+    private void vsMode() {
+        System.out.println("Modo VS");
+        System.out.println("-------");
+        System.out.println("1 - Insertar seed");
+        System.out.println("2 - Mostrar seed y salir\n");
+        System.out.println("3 - Salir\n");
+        System.out.print("Elige una opción: ");
+        
+        int option = this.READER.leerEntero();
+        
+        
+        switch (option) {
+            case 1: 
+                System.out.print("Seed: ");
+                double seed = this.READER.leerEntero();
+                this.seed = (long)seed;
+                break;
+            case 2:
+                System.out.println("Seed: " + this.seed);
+                break;
+            case 3:
+                break;
+        }
     }
     
     public int getMode() {
