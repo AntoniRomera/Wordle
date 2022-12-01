@@ -39,9 +39,8 @@ public class Palabra {
      */
     public boolean equal(Palabra objective) {
         
-        char[] objectiveWordArray = objective.getWord();
         for (int i = 0; i < this.word.length; i++) {
-            if (this.word[i] != objectiveWordArray[i]) {
+            if (this.indexToUpperCase(i) != objective.indexToUpperCase(i)) {
                 return false;
             }
         }
@@ -57,13 +56,19 @@ public class Palabra {
     public int indexOf(char c) {
         int i;
         for (i = 0; i < this.word.length; i++) {
-            if (this.word[i] == c) {
+            if (this.indexToUpperCase(i) == this.toUpperCase(c)) {
                 return i;
             }
         }
         return -1;
     }
     
+    static private char toUpperCase(char c) {
+        if (c >= (int)'a') {
+            return (char)(c - (int)('a' - 'A'));
+        }
+        return c;
+    }
     /**
      * Metodo para comparar indice por indice
      * @param c Caracter a comparar
@@ -71,7 +76,7 @@ public class Palabra {
      * @return 
      */
     public boolean sameIndex(char c, int i) {
-        return this.word[i] == c;
+        return this.indexToUpperCase(i) == this.toUpperCase(c);
     }
 
     /**
@@ -86,7 +91,11 @@ public class Palabra {
     // TODO: Preguntar si se puede hacer
     @Override
     public String toString() {
-        return new String(this.word).toUpperCase();
+        String upper_word = "";
+        for (int i = 0; i < this.length; i++) {
+            upper_word += this.word[i];
+        }
+        return upper_word;
     }
     
     /**
@@ -105,4 +114,9 @@ public class Palabra {
         this.word = word;
         this.length = word.length;
     }
+    
+    public char indexToUpperCase(int index) {        
+        return this.toUpperCase(this.word[index]);
+    }
+    
 }

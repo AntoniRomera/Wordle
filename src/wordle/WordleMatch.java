@@ -102,26 +102,20 @@ public class WordleMatch {
     
     private void compareSolution(Palabra word) {
         char c;
-        char cU;
         for (int i = 0; i < word.length; i++) {
             c = word.getIndex(i);
-            cU = word.getIndex(i);
-            if (c >= (int)'a') {
-                cU = (char)(c - (int)('a' - 'A'));
-            }
             int index = this.solution.indexOf(c);
             if (index == -1) {
                 this.hints.setOutWord(c);
-                CC.impr(""+cU, CC.TBlanc, CC.FBlanc);
+                CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FBlanc);
             } else {
-                boolean sameIndex = this.solution.sameIndex(c, i);
-                if (sameIndex) {
+                if (this.solution.sameIndex(c, i)) {
                     this.hints.setCorrectIndex(i, c);
-                    CC.impr(""+cU, CC.TBlanc, CC.FVerd);
+                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FVerd);
                 }
                 else {
                     this.hints.setInWord(c);
-                    CC.impr(""+cU, CC.TBlanc, CC.FGroc);
+                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FGroc);
                 }
             }
             

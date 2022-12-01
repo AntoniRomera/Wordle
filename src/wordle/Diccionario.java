@@ -62,13 +62,15 @@ public class Diccionario {
     
     public Palabra randomSolution() {
         
-        char[] w = {'t', 'e', 's', 't'};
+        int index = this.generateRandom();
+        
+        char[] w = {'t', 'e', 's', 't', 'e'};
         Palabra word = new Palabra(w);
         return word;
     }
     
     public Palabra officialSolution() {
-        char[] w = {'t', 'e', 's', 't'};
+        char[] w = {'t', 'e', 's', 't', 'e'};
         Palabra word = new Palabra(w);
         return word;
     }
