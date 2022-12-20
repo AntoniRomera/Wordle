@@ -77,7 +77,7 @@ public class Settings {
         try {
             System.out.println("Idioma");
             System.out.println("------");
-            File file = new File("/Users/aromera/Documents/UIB/Programacio/Wordle/src/wordle/languages.txt");
+            File file = new File("./files/languages.txt");
             FileReader fileReader = new FileReader(file); 
             BufferedReader reader = new BufferedReader(fileReader);
             String line;
@@ -98,16 +98,63 @@ public class Settings {
         
     }
     
+    private int[] charArrayToInt(char[] ca) {
+        int[] intValues = new int[ca.length];
+        
+        for(int i = 0; i < ca.length; i++) {
+            intValues[i] = ca[i] - '0';
+            System.out.println(intValues[i]);
+        }
+        return intValues;
+    }
+    
+    private String charArrayToString(char[] ca) {
+        String toShow = "";
+        
+        for(int i = 0; i < ca.length; i++) {
+            toShow += ca[i] + ", ";
+        }
+        
+        return toShow;
+    }
+    
     private void askLength() {
-        System.out.println("Longitud de la palabra");
-        System.out.println("----------------------\n");
-        System.out.print("Indica la longitud de la palabra: ");
-        
-        int length = this.READER.leerEntero();
-        
-        this.length = length;
-        
-        this.askPlayer();
+        try {
+            File file = new File("./files/length.txt");
+            FileReader fileReader = new FileReader(file); 
+            BufferedReader reader = new BufferedReader(fileReader);
+            String line;
+            char[] availableValues = {'5'};
+            while((line=reader.readLine()) != null) {
+                availableValues = line.toCharArray();
+            }
+            System.out.println("Longitud de la palabra");
+            System.out.println("----------------------\n");
+            
+            System.out.println("Valores dispobibles: " + this.charArrayToString(availableValues) + "\n");
+            System.out.print("Indica la longitud de la palabra: ");
+
+            int length = this.READER.leerEntero();
+            boolean valid = false;
+            int[] values = this.charArrayToInt(availableValues);
+            while (!valid) {
+                for(int i = 0; i < values.length; i++) {
+                    if (length == values[i]) {
+                        valid = true;
+                    }
+                }
+                if (!valid) {
+                    System.out.print("Longitud no permitida, indique otra: ");
+                    length = this.READER.leerEntero();
+                }
+            }
+
+            this.length = length;
+
+            this.askPlayer();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
     
     private void askRounds() {
@@ -129,13 +176,13 @@ public class Settings {
         System.out.println("1 - Modo facil");
         System.out.println("2 - Modo dificil");
         System.out.println("3 - Modo VS");
-        System.out.println("4 - Modo Oficial");
+        System.out.println("4 - Modo Oficial (no implementado)");
         System.out.println("5 - Modo Trampa");
         System.out.println("6 - Modo reforzado\n");
         System.out.print("Elige una opción: ");
         int mode = this.READER.leerEntero();
         
-        while(mode < 0 || mode > 6) {
+        while(mode < 0 || mode > 6 || mode == 4) {
             System.out.print("Modo no accesible, indique uno de la lista: ");
             mode = this.READER.leerEntero();
         }

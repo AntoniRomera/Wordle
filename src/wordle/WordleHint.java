@@ -101,4 +101,9 @@ public class WordleHint {
         
         return false;
     }
+    
+    
+    public boolean match(char[] w) {
+        return false;
+    }
 }

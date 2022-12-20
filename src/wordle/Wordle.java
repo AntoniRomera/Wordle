@@ -14,6 +14,7 @@ public class Wordle {
     
     private Settings settings;
     private WordleMatch game;
+    private String player;
     
     /**
      * Constructor con los ajustes basicos
@@ -34,7 +35,7 @@ public class Wordle {
     
     public void start() {
         this.game.start();
-        this.game.saveStatics();
+        this.game.saveStatics(this.player);
         
         this.rematch();
     }
@@ -48,8 +49,15 @@ public class Wordle {
         this.start();
     }
     
-    private void rematch() {
-        // TODO: exit menus with rematch options & statics
+    public void rematch() {
+        final LT reader = new LT();
+        
+        System.out.println("Quieres seguir jugando?");
+        // TODO
+    }
+    
+    public void setPlayer(String player) {
+        this.player = player;
     }
     
     public void consultStatics() {

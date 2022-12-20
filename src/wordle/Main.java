@@ -20,10 +20,14 @@ public class Main {
     public static void main(String[] args) {
         
         final LT reader = new LT();
+        // Ask name
+        System.out.print("Inserta el nombre del jugador: ");
+        String player = reader.leerLinea();
         final Wordle wordle = new Wordle();
+        wordle.setPlayer(player);
         
-        System.out.println("Bievenidos a WORDLE");
-        System.out.println("-------------------\n");
+        System.out.println("Bievenidos a WORDLE " + player);
+        System.out.println("-------------------------------------------\n");
         System.out.println("1 - Empezar a jugar (Modo basico)");
         System.out.println("2 - Modificar configuración");
         System.out.println("3 - Consultar Estadisticas");

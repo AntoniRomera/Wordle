@@ -68,8 +68,14 @@ public class WordleMatch {
             }
             if (this.solution.equal(word)) {
                 // Mostrar palabra toda en verde
+                this.compareSolution(word);
                 break;
             }
+            
+            /**
+             * Rellenar anteriores
+             */
+            this.showOlds(round - 2);
             
             /**
              * Rellenar pistas
@@ -79,6 +85,7 @@ public class WordleMatch {
             /**
              * Preguntar nueva palabra
              */
+            System.out.println("");
             word = word_manager.askAvailableWord(this.hints, mode);
         }
         
@@ -86,7 +93,7 @@ public class WordleMatch {
         
     }
     
-    public void saveStatics() {
+    public void saveStatics(String player) {
         
     }
     
@@ -98,6 +105,33 @@ public class WordleMatch {
             }
         }
         System.out.println("");
+    }
+    
+    private void showOlds(int rounds) {
+        
+        for (int o = 0; o <= rounds; o++) {
+            Palabra word = this.matchWords[o];
+            char c;
+            for (int i = 0; i < word.length; i++) {
+                c = word.getIndex(i);
+                int index = this.solution.indexOf(c);
+                if (index == -1) {
+                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FBlanc);
+                } else {
+                    if (this.solution.sameIndex(c, i)) {
+                        CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FVerd);
+                    }
+                    else {
+                        CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FGroc);
+                    }
+                }
+
+                if (i < word.length - 1) {
+                    System.out.print("|");
+                }
+            }
+            System.out.println("");
+        }
     }
     
     private void compareSolution(Palabra word) {
