@@ -103,6 +103,50 @@ public class WordleHint {
     }
     
     
+    public void removeInWords(char c) {
+        for (int i = 0; i < this.inWord.length; i++) {
+            if (this.inWord[i] == c) {
+                this.inWord[i] = '*';
+            }
+        }
+    }
+    public boolean inWords(char c) {
+        for (int i = 0; i < this.inWord.length; i++) {
+            if (this.inWord[i] == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean inCorrectIndex(char c) {
+        for (int i = 0; i < this.correctIndex.length; i++) {
+            if (this.correctIndex[i] == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean inOutWord(char c) {
+        for (int i = 0; i < this.outWord.length; i++) {
+            if (this.outWord[i] == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int countInCorrectIndex(char c) {
+        int count = 0;
+        for (int i = 0; i < this.correctIndex.length; i++) {
+            if (this.correctIndex[i] == c) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    
     public boolean match(char[] w) {
         return false;
     }

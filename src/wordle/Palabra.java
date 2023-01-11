@@ -115,8 +115,23 @@ public class Palabra {
         this.length = word.length;
     }
     
+    /**
+     * Metodo para transformar una letra a mayuscula
+     * @param index
+     * @return 
+     */
     public char indexToUpperCase(int index) {        
         return this.toUpperCase(this.word[index]);
+    }
+    
+    public int maxOccurs(char c) {
+        int occurs = 0;
+        for (int i = 0; i < this.word.length; i++) {
+            if (this.indexToUpperCase(i) == this.toUpperCase(c)) {
+                occurs++;
+            }
+        }
+        return occurs;
     }
     
 }

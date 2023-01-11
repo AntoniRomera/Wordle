@@ -4,11 +4,14 @@
  */
 package wordle;
 
+import java.time.LocalDate;
+
 import wordle.Settings;
 import wordle.Diccionario;
 import wordle.Palabra;
 import wordle.LT;
 import wordle.WordleHint;
+import wordle.FileOut;
 import com.diogonunes.CC;
 /**
  *
@@ -23,6 +26,7 @@ public class WordleMatch {
     private WordleHint hints;
     private final char COMMAND_HELP = '?';
     private Palabra[] matchWords;
+    private WordleHint[] matchHints;
     private int roundsPlayed;
     
     public WordleMatch(Settings settings) {
@@ -44,8 +48,7 @@ public class WordleMatch {
         int mode = this.settings.getMode();
         int rounds = this.settings.getRounds();
         if (mode == 4) {
-            // this.settings.getDate()
-            this.solution = word_manager.officialSolution(); //pasar fecha
+            this.solution = word_manager.officialSolution(this.settings.getDate()); //pasar fecha
         } else {
             this.solution = word_manager.randomSolution();
         }
@@ -53,6 +56,7 @@ public class WordleMatch {
         
         int round;
         this.matchWords = new Palabra[rounds];
+        this.matchHints = new WordleHint[rounds];
 
         Palabra word = word_manager.askAvailableWord(this.hints, mode);
         for (round = 1; round < rounds; round++) {
@@ -68,7 +72,8 @@ public class WordleMatch {
             }
             if (this.solution.equal(word)) {
                 // Mostrar palabra toda en verde
-                this.compareSolution(word);
+                this.showOlds(round - 2);
+                this.compareSolution(word, round);
                 break;
             }
             
@@ -80,7 +85,7 @@ public class WordleMatch {
             /**
              * Rellenar pistas
              */
-            this.compareSolution(word);
+            this.compareSolution(word, round);
             
             /**
              * Preguntar nueva palabra
@@ -94,7 +99,19 @@ public class WordleMatch {
     }
     
     public void saveStatics(String player) {
+        FileOut writer = new FileOut("./files/statics.txt");
+        String line = "";
         
+        // Fecha al acbar la partida 
+        LocalDate date = LocalDate.now();
+        line += date.toString();
+        // Jugador y palabra a descubrir
+        line += " " + player + " " + this.solution.toString();
+        for (int i = 0; i < this.roundsPlayed; i++) {
+            line += " " + this.matchWords[i];
+        }
+        writer.write(line);
+        writer.close();
     }
     
     private void soutTemplate() {
@@ -111,52 +128,56 @@ public class WordleMatch {
         
         for (int o = 0; o <= rounds; o++) {
             Palabra word = this.matchWords[o];
-            char c;
-            for (int i = 0; i < word.length; i++) {
-                c = word.getIndex(i);
-                int index = this.solution.indexOf(c);
-                if (index == -1) {
-                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FBlanc);
-                } else {
-                    if (this.solution.sameIndex(c, i)) {
-                        CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FVerd);
-                    }
-                    else {
-                        CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FGroc);
-                    }
-                }
-
-                if (i < word.length - 1) {
-                    System.out.print("|");
-                }
-            }
+            WordleHint oldHints = this.matchHints[o];
+            this.showWord(word, oldHints);
             System.out.println("");
         }
     }
     
-    private void compareSolution(Palabra word) {
+    private void showWord(Palabra word, WordleHint hints) {
         char c;
         for (int i = 0; i < word.length; i++) {
             c = word.getIndex(i);
-            int index = this.solution.indexOf(c);
-            if (index == -1) {
-                this.hints.setOutWord(c);
+            if (hints.inOutWord(c)) {
                 CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FBlanc);
+            } else if (hints.inWords(c)) {
+                CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FGroc);
+            } else if (this.solution.sameIndex(c, i)) {
+                CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FVerd);
             } else {
-                if (this.solution.sameIndex(c, i)) {
-                    this.hints.setCorrectIndex(i, c);
-                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FVerd);
-                }
-                else {
-                    this.hints.setInWord(c);
-                    CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FGroc);
-                }
+                CC.impr(""+word.indexToUpperCase(i), CC.TBlanc, CC.FBlanc);
             }
             
             if (i < word.length - 1) {
                 System.out.print("|");
             }
         }
+    }
+ 
+    private void compareSolution(Palabra word, int round) {
+        char c;
+        for (int i = 0; i < word.length; i++) {
+            c = word.getIndex(i);
+            int index = this.solution.indexOf(c);
+            if (index == -1) {
+                this.hints.setOutWord(c);
+                
+            } else {
+                if (this.solution.sameIndex(c, i)) {
+                    this.hints.setCorrectIndex(i, c);
+                    if (this.solution.maxOccurs(c) == this.hints.countInCorrectIndex(c) && this.hints.inWords(c)) {
+                        this.hints.removeInWords(c);
+                    }
+                }
+                else {
+                    if (!(this.solution.maxOccurs(c) == this.hints.countInCorrectIndex(c))) {
+                        this.hints.setInWord(c);
+                    }
+                }
+            }
+        }
+        this.matchHints[round - 1] = this.hints;
+        this.showWord(word, this.hints);
     }
     
 }

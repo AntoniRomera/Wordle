@@ -8,6 +8,7 @@ import java.util.Random;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.time.LocalDate;
 
 import wordle.Palabra;
 import wordle.LT;
@@ -164,13 +165,15 @@ public class Diccionario {
         }
         String readed = file.readLineAt(line, w);
         if (readed == w.toString()) {
+            readed = w.toString();
             System.out.println("Hubo un error, la palabra es " + w.toString());
         }
+        readed = "hater";
         Palabra word = new Palabra(readed.toCharArray());
         return word;
     }
     
-    public Palabra officialSolution() {
+    public Palabra officialSolution(LocalDate date) {
         char[] w = {'t', 'e', 's', 't', 'e'};
         Palabra word = new Palabra(w);
         return word;

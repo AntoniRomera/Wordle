@@ -7,7 +7,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import wordle.LT;
-import wordle.Diccionario;
+import wordle.FileIn;
+
+import java.time.LocalDate;
 /**
  *
  * @author aromera
@@ -28,6 +30,7 @@ public class Settings {
      */
     private int mode = 0;
     private int language = 2;
+    private LocalDate date = LocalDate.now();
     private long seed = System.currentTimeMillis();
     private final LT READER = new LT();
     
@@ -74,27 +77,21 @@ public class Settings {
     }
     
     private void askLanguage() {
-        try {
-            System.out.println("Idioma");
-            System.out.println("------");
-            File file = new File("./files/languages.txt");
-            FileReader fileReader = new FileReader(file); 
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line;
-            char[] lineArray;
-            while((line=reader.readLine()) != null) {
-                lineArray = line.toCharArray();
-                System.out.println(lineArray[0] + " - " + lineArray[2] + lineArray[3]);
-            }
-            System.out.print("\nElige una opción: ");
-            int language = this.READER.leerEntero();
-            
-            this.language = language;
-            
-            this.askPlayer();
-        } catch (Exception e) {
-            System.out.println(e);
+        System.out.println("Idioma");
+        System.out.println("------");
+        FileIn file = new FileIn("./files/languages.txt");
+        String line;
+        char[] lineArray;
+        while((line=file.readLine()) != null) {
+            lineArray = line.toCharArray();
+            System.out.println(lineArray[0] + " - " + lineArray[2] + lineArray[3]);
         }
+        System.out.print("\nElige una opción: ");
+        int language = this.READER.leerEntero();
+
+        this.language = language;
+
+        this.askPlayer();
         
     }
     
@@ -103,7 +100,6 @@ public class Settings {
         
         for(int i = 0; i < ca.length; i++) {
             intValues[i] = ca[i] - '0';
-            System.out.println(intValues[i]);
         }
         return intValues;
     }
@@ -119,42 +115,36 @@ public class Settings {
     }
     
     private void askLength() {
-        try {
-            File file = new File("./files/length.txt");
-            FileReader fileReader = new FileReader(file); 
-            BufferedReader reader = new BufferedReader(fileReader);
-            String line;
-            char[] availableValues = {'5'};
-            while((line=reader.readLine()) != null) {
-                availableValues = line.toCharArray();
-            }
-            System.out.println("Longitud de la palabra");
-            System.out.println("----------------------\n");
-            
-            System.out.println("Valores dispobibles: " + this.charArrayToString(availableValues) + "\n");
-            System.out.print("Indica la longitud de la palabra: ");
-
-            int length = this.READER.leerEntero();
-            boolean valid = false;
-            int[] values = this.charArrayToInt(availableValues);
-            while (!valid) {
-                for(int i = 0; i < values.length; i++) {
-                    if (length == values[i]) {
-                        valid = true;
-                    }
-                }
-                if (!valid) {
-                    System.out.print("Longitud no permitida, indique otra: ");
-                    length = this.READER.leerEntero();
-                }
-            }
-
-            this.length = length;
-
-            this.askPlayer();
-        } catch (Exception e) {
-            System.out.println(e);
+        FileIn file = new FileIn("./files/length.txt");
+        String line;
+        char[] availableValues = {'5'};
+        while((line=file.readLine()) != null) {
+            availableValues = line.toCharArray();
         }
+        System.out.println("Longitud de la palabra");
+        System.out.println("----------------------\n");
+
+        System.out.println("Valores dispobibles: " + this.charArrayToString(availableValues) + "\n");
+        System.out.print("Indica la longitud de la palabra: ");
+
+        int length = this.READER.leerEntero();
+        boolean valid = false;
+        int[] values = this.charArrayToInt(availableValues);
+        while (!valid) {
+            for(int i = 0; i < values.length; i++) {
+                if (length == values[i]) {
+                    valid = true;
+                }
+            }
+            if (!valid) {
+                System.out.print("Longitud no permitida, indique otra: ");
+                length = this.READER.leerEntero();
+            }
+        }
+
+        this.length = length;
+
+        this.askPlayer();
     }
     
     private void askRounds() {
@@ -176,23 +166,48 @@ public class Settings {
         System.out.println("1 - Modo facil");
         System.out.println("2 - Modo dificil");
         System.out.println("3 - Modo VS");
-        System.out.println("4 - Modo Oficial (no implementado)");
+        System.out.println("4 - Modo Oficial");
         System.out.println("5 - Modo Trampa");
         System.out.println("6 - Modo reforzado\n");
         System.out.print("Elige una opción: ");
         int mode = this.READER.leerEntero();
         
-        while(mode < 0 || mode > 6 || mode == 4) {
+        while(mode < 0 || mode > 6) {
             System.out.print("Modo no accesible, indique uno de la lista: ");
             mode = this.READER.leerEntero();
         }
         this.mode = mode;
         
+        if (mode == 4) {
+            this.length = 5;
+            this.rounds = 6;
+            this.askDate();
+        }
         
         if (mode == 3) {
             this.vsMode();
         }
         
+        this.askPlayer();
+    }
+    
+    private void askDate() {
+        System.out.println("Fecha");
+        System.out.println("------");
+        FileIn file = new FileIn("./files/languages.txt");
+        String line;
+        char[] lineArray;
+        while((line=file.readLine()) != null) {
+            lineArray = line.toCharArray();
+            if ((lineArray[0] - '0') == this.language) {
+                System.out.println("Desde: " + lineArray[4] + lineArray[5] + lineArray[6] + lineArray[7] + lineArray[8] + lineArray[9] + lineArray[10] + lineArray[11] + lineArray[12] + lineArray[13] + lineArray[14]);
+            }
+        }
+        System.out.print("\nA partir de las fecha indicada, indicame una posterior en el mismo format: ");
+        String date = this.READER.leerLinea();
+
+        this.date = LocalDate.parse(date);
+
         this.askPlayer();
     }
     
@@ -237,6 +252,10 @@ public class Settings {
     
     public long getSeed() {
         return this.seed;
+    }
+    
+    public LocalDate getDate() {
+        return this.date;
     }
     
 }
